@@ -21,19 +21,13 @@ class CrawlSpiderSpider(scrapy.Spider):
     def parse(self, response):
        urls = [s.strip() for s in response.xpath('//h3[@class="lister__header"]/a/@href').getall()]
        for url in urls:
-        request = Request(urljoin('https://www.biospace.com',url).strip(), callback=self.each_job)
+        request = Request(urljoin('https://www.biospace.com',url).strip(), callback=self.parse_job)
         yield request
-       
-       next_page_href = response.xpath('//a[@title="Next page"]/@href').get()
-       if next_page_href:
-        yield scrapy.Request(response.urljoin(next_page_href), callback=self.parse)
+        
+    def parse_job(self, response):
+        title = response.xpath('//h1/text()').get()
+        company = response.xpath('//dd/a/span/text()').get()
+        posted_date = response.xpath('//div[contains(@class,"posted-date")]//dd[contains(@class,"grid-item three")]/span/text()').get()
+        required_education = response.xpath('//div[contains(@class,"RequiredEducation")]//dd/a/text()').get()
+        yield {'title':title,'url':response.url,'company':company,'posted_date':posted_date,'required_education':required_education,'parsed_moment':time.ctime()}
 
-    def each_job(self, response):
-        yield {
-            'parsed_moment':time.ctime(),
-            'title':response.xpath('//h1/text()').get(),
-            'url':response.url,
-            'company':response.xpath('//dd/a/span/text()').get(),
-            'posted_date':response.xpath('//div[contains(@class,"posted-date")]//dd[contains(@class,"grid-item three")]/span/text()').get(),
-            'required_education': response.xpath('//div[contains(@class,"RequiredEducation")]//dd/a/text()').get()
-            }
