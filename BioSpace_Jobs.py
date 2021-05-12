@@ -14,16 +14,21 @@ class JobsDirItem(scrapy.Item):
     required_education = scrapy.Field()
 
 class CrawlSpiderSpider(scrapy.Spider):
-    name = 'crawl_spider'
+    name = 'spider_w-nextpage'
     allowed_domains = ['biospace.com']
-    start_urls = ["https://www.biospace.com/searchjobs/?countrycode=US&Page=" + str(i) for i in range(303)]
+    start_urls = ["https://www.biospace.com/searchjobs/"]
 
     def parse(self, response):
        urls = [s.strip() for s in response.xpath('//h3[@class="lister__header"]/a/@href').getall()]
        for url in urls:
         request = Request(urljoin('https://www.biospace.com',url).strip(), callback=self.parse_job)
         yield request
-        
+       next_page = response.xpath('//a[@title="Next page"]/@href').get()
+       if next_page != '':
+            request_ = Request('https://www.biospace.com'+next_page, callback=self.parse)
+            yield request_  
+       else:
+        pass
     def parse_job(self, response):
         title = response.xpath('//h1/text()').get()
         company = response.xpath('//dd/a/span/text()').get()
