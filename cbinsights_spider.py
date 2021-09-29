@@ -12,5 +12,5 @@ class LocationSpider(scrapy.Spider):
         yield{
         'source':response.request.url,
         'country':response.xpath('//*[@data-test="country"]/text()').get(),
-        'data' :response.xpath('//script[@id="__NEXT_DATA__" and @type="application/json"]/text()').get()
+        'phone':response.xpath('//*[@data-test="phone"]/text()').get()
         }
