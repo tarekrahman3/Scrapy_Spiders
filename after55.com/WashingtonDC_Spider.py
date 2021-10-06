@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import scrapy
-import scrapy
 from scrapy import Request
 
 class WashingtonDcSpider(scrapy.Spider):
