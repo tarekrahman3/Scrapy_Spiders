@@ -23,11 +23,11 @@ class WashingtonDcSpider(scrapy.Spider):
             pass
     
     def parse_appointments(self, response):
-        name = response.xpath('//div[@class = "profile-h1"]/h1/text()').get()
-        street_address = response.xpath('//div[@class="adr fn prop_addr"]/span[@class="street-address"]/text()').get()
-        city = response.xpath('//div[@class="adr fn prop_addr"]/span[@class="locality"]/text()').get()
-        state = response.xpath('//div[@class="adr fn prop_addr"]/span[@class="region"]/text()').get()
-        zip_code = response.xpath('//div[@class="adr fn prop_addr"]/span[@class="postal-code"]/text()').get()
+        name = response.xpath('//h1/text()').get()
+        street_address = response.xpath('//span[@class="street-address"]/text()').get()
+        city = response.xpath('//span[@class="locality"]/text()').get()
+        state = response.xpath('//span[@class="region"]/text()').get()
+        zip_code = response.xpath('//span[@class="postal-code"]/text()').get()
         phone = response.xpath('//span[@class="phone_block"]/a[@id="phonebutton"]/text()').get()
         yield {
         'source':response.url,
